@@ -16,7 +16,6 @@ day01 :: proc(input: string) -> (ResultT, ResultT) {
         // Part 01
         first_idx := strings.index_any(line, "0123456789")
         last_idx := strings.last_index_any(line, "0123456789")
-        fmt.println(line, first_idx, last_idx)
         if first_idx != -1 && last_idx != -1 {
             cal01, _ := strconv.parse_int(string([]u8{line[first_idx], line[last_idx]}))
             part01 += cal01
