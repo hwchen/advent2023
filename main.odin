@@ -40,6 +40,7 @@ main :: proc() {
     days := map[string]DayProc {
         "day01" = day01,
         "day02" = day02,
+        "day03" = day03,
     };defer delete(days)
 
     total_time := 0.0
