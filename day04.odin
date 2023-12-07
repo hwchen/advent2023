@@ -10,9 +10,11 @@ day04 :: proc(input: string) -> (ResultT, ResultT) {
     input := input
     part01 := 0
     part02 := 0
+    all_cards : [dynamic]Card
+    append(&all_cards, Card { card = 0, matches = 0})
     for line in strings.split_iterator(&input, "\n") {
         header_body := strings.split(line, ":")
-        //card_num, _ := strconv.parse_int(header_body[0][5:])
+        card, _ := strconv.parse_int(strings.trim(header_body[0][5:], " "))
         sets := strings.split(header_body[1], "|")
         winners := parse_numbers(sets[0], ' ')
         mine := parse_numbers(sets[1], ' ')
@@ -26,8 +28,28 @@ day04 :: proc(input: string) -> (ResultT, ResultT) {
             }
         }
         part01 += 0 if matches == 0 else 1 << (matches - 1)
+        append(&all_cards, Card {card, matches })
     }
+
+    // part 02
+    memo:= make([]int, len(all_cards))
+    #reverse for card in all_cards[1:] {
+        score := 1
+        if card.matches > 0 {
+            for i in card.card + 1..< card.card + 1 + int(card.matches) {
+                score += memo[i]
+            }
+        }
+        memo[card.card] = score
+        part02 += score
+    }
+
     return part01, part02
+}
+
+Card :: struct {
+    card: int,
+    matches: uint,
 }
 
 @(test)
@@ -41,5 +63,5 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11`
 
     part01, part02 := day04(input)
     testing.expect_value(t, part01, int(13))
-    testing.expect_value(t, part02, int(0))
+    testing.expect_value(t, part02, int(30))
 }
