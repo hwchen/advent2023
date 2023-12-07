@@ -42,6 +42,7 @@ main :: proc() {
         "day02" = day02,
         "day03" = day03,
         "day04" = day04,
+        "day05" = day05,
     };defer delete(days)
 
     total_time := 0.0
