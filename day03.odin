@@ -117,15 +117,6 @@ is_symbol :: proc(c: u8) -> bool {
     }
 }
 
-is_digit :: proc(c: u8) -> bool {
-    switch c {
-    case '0' ..= '9':
-        return true
-    case:
-        return false
-    }
-}
-
 @(test)
 test_day03 :: proc(t: ^testing.T) {
     input := `467..114..
