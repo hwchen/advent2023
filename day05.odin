@@ -18,25 +18,33 @@ day05 :: proc(input: string) -> (ResultT, ResultT) {
 
     for section in sections[1:] {
         range_lines := strings.trim(strings.split(section, ":")[1], "\n")
-        for seed in &seeds {
-            for range_line in strings.split(range_lines, "\n") {
-                range := transmute(^Range)raw_data(parse_numbers(range_line, ' '))
-                if seed >= range.source_start && seed < range.source_start + range.range_length {
-                    seed = range.destination_start + seed - range.source_start
-                    break
-                }
-            }
+        map_ranges: [dynamic]MapRange
+        for range_line in strings.split(range_lines, "\n") {
+            append(&map_ranges, (transmute(^MapRange)raw_data(parse_numbers(range_line, ' ')))^)
         }
+        // part01
+        map_part01(&seeds, map_ranges[:])
     }
     part01 = slice.min(seeds)
 
     return part01, part02
 }
 
-Range :: struct {
+map_part01 :: proc(seeds: ^[]int, ranges: []MapRange) {
+    for seed in seeds {
+        for range in ranges {
+            if seed >= range.source_start && seed < range.source_start + range.range_length {
+                seed = range.destination_start + seed - range.source_start
+                break
+            }
+        }
+    }
+}
+
+MapRange :: struct {
     destination_start: int,
-    source_start: int,
-    range_length: int,
+    source_start:      int,
+    range_length:      int,
 }
 
 @(test)
