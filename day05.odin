@@ -6,6 +6,7 @@ import "core:strconv"
 import "core:strings"
 import "core:testing"
 
+// FIXME optimize part 02. (use ranges? something simpler?)
 day05 :: proc(input: string) -> (ResultT, ResultT) {
     input := input
     part01 := 0
@@ -15,6 +16,14 @@ day05 :: proc(input: string) -> (ResultT, ResultT) {
 
     // just mutate the seeds
     seeds := parse_numbers(strings.split(sections[0], ":")[1], ' ')
+    seed_ranges := slice.reinterpret([]SeedRange, slice.clone(seeds))
+    sfr: [dynamic]int
+    for sr in seed_ranges {
+        for n in sr.start ..< sr.start + sr.length {
+            append(&sfr, n)
+        }
+    }
+    seeds_from_range := sfr[:]
 
     for section in sections[1:] {
         range_lines := strings.trim(strings.split(section, ":")[1], "\n")
@@ -23,14 +32,16 @@ day05 :: proc(input: string) -> (ResultT, ResultT) {
             append(&map_ranges, (transmute(^MapRange)raw_data(parse_numbers(range_line, ' ')))^)
         }
         // part01
-        map_part01(&seeds, map_ranges[:])
+        mapit(&seeds, map_ranges[:])
+        mapit(&seeds_from_range, map_ranges[:])
     }
     part01 = slice.min(seeds)
+    part02 = slice.min(seeds_from_range[:])
 
     return part01, part02
 }
 
-map_part01 :: proc(seeds: ^[]int, ranges: []MapRange) {
+mapit :: proc(seeds: ^[]int, ranges: []MapRange) {
     for seed in seeds {
         for range in ranges {
             if seed >= range.source_start && seed < range.source_start + range.range_length {
@@ -45,6 +56,11 @@ MapRange :: struct {
     destination_start: int,
     source_start:      int,
     range_length:      int,
+}
+
+SeedRange :: struct {
+    start:  int,
+    length: int,
 }
 
 @(test)
