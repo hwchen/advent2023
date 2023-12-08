@@ -101,5 +101,5 @@ humidity-to-location map:
 
     part01, part02 := day05(input)
     testing.expect_value(t, part01, int(35))
-    testing.expect_value(t, part02, int(0))
+    testing.expect_value(t, part02, int(46))
 }
