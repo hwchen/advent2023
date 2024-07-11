@@ -42,7 +42,7 @@ day05 :: proc(input: string) -> (ResultT, ResultT) {
 }
 
 mapit :: proc(seeds: ^[]int, ranges: []MapRange) {
-    for seed in seeds {
+    for &seed in seeds {
         for range in ranges {
             if seed >= range.source_start && seed < range.source_start + range.range_length {
                 seed = range.destination_start + seed - range.source_start
